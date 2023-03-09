@@ -1,4 +1,3 @@
-<!-- templates/base.html -->
 <!DOCTYPE html> <!-- Используется html 5 версии -->
 
 {% load static %}
@@ -26,7 +25,9 @@
       {% include 'includes/header.html' %}   
     </header>
     <main> 
-      {% block content %}{% endblock content %}
+      <div class="container py-5">
+        {% block content %}{% endblock content %}
+      </div>
     </main>
     <!-- Использованы классы бустрапа: -->
     <!-- border-top: создаёт тонкую линию сверху блока -->

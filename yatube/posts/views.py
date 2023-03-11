@@ -12,15 +12,7 @@ def index(request):
         'posts': posts,
     }
     return render(request, 'posts/index.html', context)
-'''
-def show_groups_list(request):
-    template = 'posts/group_list.html'
-    return render(request, template)
 
-def group_posts(request, slug):
-    template = 'posts/group_list.html'
-    return render(request, template)
-'''
 
 def group_posts(request, slug):
     # Функция get_object_or_404 получает по заданным критериям объект 

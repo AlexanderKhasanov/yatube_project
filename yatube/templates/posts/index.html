@@ -3,7 +3,7 @@
 
 {% block title %}
   Последние обновления на сайте
-{% endblock title %}
+{% endblock %}
   
 {% block content %}
   <h1>Последние обновления на сайте</h1>
@@ -11,4 +11,4 @@
     {% include 'includes/post.html' with post=post %}     
   {% if not forloop.last %}<hr>{% endif %}
   {% endfor %} 
-{% endblock content %}
+{% endblock %}

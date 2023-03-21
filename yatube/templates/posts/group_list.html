@@ -4,7 +4,7 @@
 
 {% block title %}
   {{ group.title }}
-{% endblock title %}
+{% endblock %}
   
 {% block content %}
   <h1>{{ group.title }}</h1>
@@ -15,4 +15,4 @@
     {% include 'includes/post.html' with post=post %}
   {% if not forloop.last %}<hr>{% endif %}
   {% endfor %}
-{% endblock content %}
+{% endblock %}

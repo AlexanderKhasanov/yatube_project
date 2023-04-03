@@ -73,11 +73,14 @@ def post_create(request):
 
 
 def post_edit(request, post_id):
-    is_edit = True
     post = Post.objects.get(pk=post_id)
-    print('IT is edit')
-    #if post.author != request.user:
-    #    return redirect('posts:post_detail', post_id)
+    if post.author != request.user:
+        return redirect('posts:post_detail', post_id)
+    context = {
+        'post': post,
+        'form': PostForm(instance=post),
+        'is_edit': True
+    }
     if request.method == 'POST':
         post_form = PostForm(request.POST, instance=post)
         print('start edit')
@@ -85,11 +88,6 @@ def post_edit(request, post_id):
             post = post_form.save()
             print('edit post succes')
             return redirect('posts:post_detail', post_id)
-        return render(request, 'posts/create_post.html', {'post': post_form})
-    post_form = PostForm(instance=post)
-    context = {
-        'post': post,
-        'form': post_form,
-        'is_edit': is_edit
-    }
+        context['form'] = post_form
+        return render(request, 'posts/create_post.html', context)
     return render(request, 'posts/create_post.html', context)

@@ -27,7 +27,10 @@ class Group(models.Model):
 
 
 class Post(models.Model):
-    text = models.TextField(verbose_name='The text of the post')
+    text = models.TextField(
+        verbose_name='Текст поста',
+        help_text='Текст поста'
+    )
     pub_date = models.DateTimeField(
         auto_now_add=True,
         verbose_name='Date of publication of the post',
@@ -45,9 +48,8 @@ class Post(models.Model):
         related_name='group',
         blank=True,
         null=True,
-        verbose_name='The group to which the post belongs',
-        help_text=('Select the group to which the post belongs.'
-                   'The field may be empty')
+        verbose_name='Группа',
+        help_text='Группа, к поторой будет относиться пост'
     )
 
     class Meta:

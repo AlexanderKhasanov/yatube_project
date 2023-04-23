@@ -1,13 +1,11 @@
-<!DOCTYPE html>
-
 {% extends 'base.html' %}
 
 {% block title %}
-Профайл пользователя {{ username }}
+Профайл пользователя {{ author.get_full_name }}
 {% endblock  %}
 
 {% block content %}
-<h1>Все посты пользователя {{ username }} </h1>
+<h1>Все посты пользователя {{ author.get_full_name }} </h1>
 <h3>Всего постов: {{ page_obj.paginator.count }} </h3>   
 {% for post in page_obj %}
   {% include 'includes/post.html' with post=post %}

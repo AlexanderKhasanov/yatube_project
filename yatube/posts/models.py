@@ -29,18 +29,18 @@ class Group(models.Model):
 class Post(models.Model):
     text = models.TextField(
         verbose_name='Текст поста',
-        help_text='Текст поста'
+        help_text='Введите текст поста'
     )
     pub_date = models.DateTimeField(
         auto_now_add=True,
-        verbose_name='Date of publication of the post',
-        help_text='The publication date is added automatically'
+        verbose_name='Дата публикации',
+        help_text='Дата публикации добавится автоматически'
     )
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name='posts',
-        verbose_name='The author of the post'
+        verbose_name='Автор поста'
     )
     group = models.ForeignKey(
         Group,
@@ -57,6 +57,5 @@ class Post(models.Model):
         verbose_name_plural = 'posts'
         ordering = ['-pub_date']
 
-    def __str__(self):
-        return (f'Author Post - {self.author}. '
-                f'Date of publication - {self.pub_date}')
+    def __str__(self) -> str:
+        return self.text[:15]

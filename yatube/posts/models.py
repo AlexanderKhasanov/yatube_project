@@ -7,16 +7,22 @@ User = get_user_model()
 class Group(models.Model):
     title = models.CharField(
         max_length=200,
-        verbose_name='group name',
-        help_text='The group name cannot exceed 200 characters'
+        verbose_name='Название группы',
+        help_text='Введите название группы (максимум 200 символов)'
     )
     slug = models.SlugField(
         max_length=20,
         unique=True,
-        verbose_name='the unique address of the group',
-        help_text='Slug cannot exceed 200 characters. Slug must be unique'
+        verbose_name='Адрес для страницы группы',
+        help_text=(
+            'Укажите уникальный адрес для страницы задачи. Используйте только '
+            'латиницу, цифры, дефисы и знаки подчёркивания'
+        )
     )
-    description = models.TextField(verbose_name='text describing the group')
+    description = models.TextField(
+        verbose_name='Описание группы',
+        help_text='Введите описание группы'
+    )
 
     class Meta:
         verbose_name = 'group'

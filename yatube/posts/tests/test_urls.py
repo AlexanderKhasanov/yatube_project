@@ -97,8 +97,9 @@ class PostURLTests(TestCase):
             '/': 'posts/index.html',
             '/create/': 'posts/create_post.html',
             f'/group/{PostURLTests.group.slug}/': 'posts/group_list.html',
-            f'/profile/{PostURLTests.user.get_username()}/':
-                'posts/profile.html',
+            f'/profile/{PostURLTests.user.get_username()}/': (
+                'posts/profile.html'
+            ),
             f'/posts/{PostURLTests.post.pk}/': 'posts/post_detail.html',
             f'/posts/{PostURLTests.post.pk}/edit/': 'posts/create_post.html',
         }

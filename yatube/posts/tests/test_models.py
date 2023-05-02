@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 
-from ..models import Post, Group
+from posts.models import Post, Group
 
 User = get_user_model()
 
@@ -13,7 +13,7 @@ class PostModelTest(TestCase):
         cls.user = User.objects.create_user(username='auth')
         cls.group = Group.objects.create(
             title='Тестовая группа',
-            slug='Тестовый слаг',
+            slug='test-slug',
             description='Тестовое описание',
         )
         cls.post = Post.objects.create(
@@ -88,7 +88,7 @@ class GroupModelTest(TestCase):
         super().setUpClass()
         cls.group = Group.objects.create(
             title='Тестовая группа',
-            slug='Тестовый слаг',
+            slug='test-slug',
             description='Тестовое описание',
         )
 

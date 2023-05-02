@@ -2,7 +2,7 @@ from django.test import TestCase, Client
 from django.contrib.auth import get_user_model
 from http import HTTPStatus
 
-from ..models import Post, Group
+from posts.models import Post, Group
 
 User = get_user_model()
 
@@ -11,7 +11,7 @@ class PostURLTests(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.user = User.objects.create_user(username='HasNoName')
+        cls.user = User.objects.create_user(username='NoName')
         cls.group = Group.objects.create(
             title='Тестовая группа',
             slug='test-slug',
@@ -51,7 +51,7 @@ class PostURLTests(TestCase):
         на страницу авторизации
         """
         response = self.guest_user.get('/create/', follow=True)
-        self.assertRedirects(response, ('/auth/login/?next=/create/'))
+        self.assertRedirects(response, '/auth/login/?next=/create/')
 
     def test_post_edit_url_exists_at_desired_location_author(self):
         """Страница /post/<post_id>/edit/ доступна автору"""
@@ -72,7 +72,7 @@ class PostURLTests(TestCase):
         response = no_author.get(
             f'/posts/{post_id}/edit/'
         )
-        self.assertRedirects(response, (f'/posts/{post_id}/'))
+        self.assertRedirects(response, f'/posts/{post_id}/')
 
     def test_post_edit_url_redirect_anonymous(self):
         """Страница /post/<post_id>/edit/ перенаправляет анонимного
@@ -83,7 +83,7 @@ class PostURLTests(TestCase):
             f'/posts/{post_id}/edit/'
         )
         self.assertRedirects(
-            response, (f'/auth/login/?next=/posts/{post_id}/edit/')
+            response, f'/auth/login/?next=/posts/{post_id}/edit/'
         )
 
     def test_non_existent_page(self):

@@ -130,9 +130,9 @@ class PostPagesTest(TestCase):
         self.assertEqual(response.context['post'].group, PostPagesTest.group)
         self.assertEqual(response.context['is_edit'], True)
 
-    def test_new_post_appears_main_page(self):
+    def test_new_post_appears_needed_page(self):
         """Если при создании поста указать группу, то он появляется
-        на главное странице
+        на страницах: index, group_list, profile
         """
         # Создаем новый пост
         post_text = 'Новый пост'
@@ -147,21 +147,37 @@ class PostPagesTest(TestCase):
         )
         # Проверка процесса создания поста есть в test_forms.py
         # Тут проверяем только то, что пост появится на нужных страницах
-        list_page = [
-            reverse('posts:index'),
+        page_posts = {
+            reverse('posts:index'): 'page_obj',
             reverse(
                 'posts:group_list',
-                kwargs={'slug': PostPagesTest.group.slug}
-            ),
+                kwargs={'slug': PaginatorViewsTest.group.slug}
+            ): 'page_obj',
             reverse(
                 'posts:profile',
-                kwargs={'username': PostPagesTest.user.get_username()}
-            )
-        ]
-        for page in list_page:
-            with self.subTest(adress=page):
-                response = self.authorized_client.get(page)
-                response.
+                kwargs={'username': PaginatorViewsTest.user.get_username()}
+            ): 'page_obj',
+        }
+        for adress, page_obj in page_posts.items():
+            with self.subTest(adress=adress):
+                response = self.authorized_client.get(adress)
+                page_posts = response.context[page_obj]
+                self.assertIn(PostPagesTest.post, page_posts.object_list)
+
+    def test_new_post_missing_unnecessary_group(self):
+        """Новый пост не попал в группу, для которой не был предназначен"""
+        group_2 = Group.objects.create(
+            title='Вторая группа',
+            slug='test-slug-2'
+        )
+        response = self.authorized_client.get(reverse(
+            'posts:group_list',
+            kwargs={'slug': group_2.slug}
+        ))
+        self.assertNotIn(
+            PostPagesTest.post,
+            response.context['page_obj'].object_list
+        )
 
 
 class PaginatorViewsTest(TestCase):

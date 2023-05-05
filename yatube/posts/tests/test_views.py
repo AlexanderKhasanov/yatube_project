@@ -151,11 +151,11 @@ class PostPagesTest(TestCase):
             reverse('posts:index'): 'page_obj',
             reverse(
                 'posts:group_list',
-                kwargs={'slug': PaginatorViewsTest.group.slug}
+                kwargs={'slug': PostPagesTest.group.slug}
             ): 'page_obj',
             reverse(
                 'posts:profile',
-                kwargs={'username': PaginatorViewsTest.user.get_username()}
+                kwargs={'username': PostPagesTest.user.get_username()}
             ): 'page_obj',
         }
         for adress, page_obj in page_posts.items():

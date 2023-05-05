@@ -3,7 +3,6 @@ from django.test import Client, TestCase
 from django.urls import reverse
 
 from posts.models import Post, Group
-from posts.forms import PostForm
 
 User = get_user_model()
 
@@ -48,11 +47,11 @@ class PostCreateFormTest(TestCase):
                 kwargs={'username': PostCreateFormTest.user.get_username()}
             )
         )
-        self.assertEqual(Post.objects.count(), posts_count+1)
+        self.assertEqual(Post.objects.count(), posts_count + 1)
         self.assertTrue(
             Post.objects.filter(
-                text=post_text,
-                group=PostCreateFormTest.group,
+                text=post_form['text'],
+                group=post_form['group'],
                 author=PostCreateFormTest.user,
             ).exists()
         )
@@ -83,8 +82,8 @@ class PostCreateFormTest(TestCase):
         self.assertEqual(Post.objects.count(), posts_count)
         self.assertTrue(
             Post.objects.filter(
-                text=new_post_text,
-                group=PostCreateFormTest.group,
+                text=post_form['text'],
+                group=post_form['group'],
                 author=PostCreateFormTest.user
             ).exists()
         )

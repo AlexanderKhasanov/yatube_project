@@ -18,7 +18,7 @@ class PostModelTest(TestCase):
         )
         cls.post = Post.objects.create(
             author=cls.user,
-            text='Тестовый пост',
+            text='Тестовый пост для проверки моделей',
             group=cls.group
         )
 
@@ -115,7 +115,7 @@ class GroupModelTest(TestCase):
     def test_help_text(self):
         """help_text в полях совпадает с ожидаемым."""
         group = GroupModelTest.group
-        field_group_help_text = { 
+        field_group_help_text = {
             'title': 'Введите название группы (максимум 200 символов)',
             'slug': ('Укажите уникальный адрес для страницы задачи. '
                      'Используйте только латиницу, цифры, дефисы и знаки '

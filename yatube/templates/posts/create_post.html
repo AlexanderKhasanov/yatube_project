@@ -28,6 +28,7 @@
           {% else %}
             {% url 'posts:post_edit' post.pk %}
           {% endif %}
+          enctype="multipart/form-data"
         >
           {% csrf_token %}
           {% for field in form %}           

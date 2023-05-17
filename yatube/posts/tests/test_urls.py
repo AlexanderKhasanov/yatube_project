@@ -1,6 +1,7 @@
 from django.test import TestCase, Client
 from django.contrib.auth import get_user_model
 from django.urls import reverse
+from django.core.cache import cache
 from http import HTTPStatus
 
 from posts.models import Post, Group
@@ -28,6 +29,7 @@ class PostURLTests(TestCase):
         self.guest_user = Client()
         self.authorized_client = Client()
         self.authorized_client.force_login(PostURLTests.user)
+        cache.clear()
 
     def test_public_pages_exists_at_desired_location(self):
         """Общедоступные страницы доступны любому пользователю"""
@@ -101,6 +103,19 @@ class PostURLTests(TestCase):
             reverse('auth:login') + '?next=' + post_edit_url
         )
 
+    def test_follow_redirect_anonymous(self):
+        """При попытке подписаться неаторизованный пользователь
+        перенаправляется на страницу авторизации
+        """
+        follow_url = reverse(
+            'posts:profile_follow', kwargs={'username': PostURLTests.user}
+        )
+        response = self.guest_user.get(follow_url)
+        self.assertRedirects(
+            response,
+            reverse('auth:login') + '?next=' + follow_url
+        )
+
     def test_non_existent_page(self):
         """Попытка зайти на несуществующую страницу"""
         response = self.authorized_client.get('/unexisting_page/')
@@ -132,3 +147,16 @@ class PostURLTests(TestCase):
             with self.subTest(reverse_name=reverse_name):
                 response = self.authorized_client.get(reverse_name)
                 self.assertTemplateUsed(response, template)
+
+    def test_add_comment_url_redirect_anonymous(self):
+        """Страница /<int:post_id>/comment/ перенаправляет анонимного
+        пользователя на страницу авторизации
+        """
+        post_create_url = reverse(
+            'posts:add_comment', kwargs={'post_id': PostURLTests.post.pk}
+        )
+        response = self.guest_user.get(post_create_url, follow=True)
+        self.assertRedirects(
+            response,
+            reverse('auth:login') + '?next=' + post_create_url
+        )

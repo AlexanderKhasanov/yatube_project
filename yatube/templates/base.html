@@ -1,6 +1,7 @@
 <!DOCTYPE html> <!-- Используется html 5 версии -->
 
 {% load static %}
+{% load thumbnail %}
 
 <html lang="ru"> <!-- Язык сайта - русский -->
   <head>    
@@ -25,7 +26,7 @@
       {% include 'includes/header.html' %}   
     </header>
     <main> 
-      <div class="container">
+      <div class="container py-5">
         {% block content %}{% endblock content %}
       </div>
     </main>

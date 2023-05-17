@@ -57,11 +57,82 @@ class Post(models.Model):
         verbose_name='Группа',
         help_text='Группа, к поторой будет относиться пост'
     )
+    image = models.ImageField(
+        'Картинка',
+        upload_to='posts/',
+        blank=True
+    )
 
     class Meta:
-        verbose_name = 'post'
-        verbose_name_plural = 'posts'
+        verbose_name = 'Пост'
+        verbose_name_plural = 'Посты'
         ordering = ['-pub_date']
 
     def __str__(self) -> str:
         return self.text[:15]
+
+
+class Comment(models.Model):
+    text = models.TextField(
+        verbose_name='Текст комментария',
+        help_text='Введите текст поста'
+    )
+    created = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Дата комментария',
+    )
+    post = models.ForeignKey(
+        Post,
+        on_delete=models.CASCADE,
+        related_name='comments',
+        verbose_name='Пост',
+        help_text='Пост, к которому привязан комментарий',
+    )
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='comments',
+        verbose_name='Автор комментария',
+        help_text='Пользователь, который оставил комментарий'
+    )
+
+    class Meta:
+        verbose_name = 'Пост'
+        verbose_name_plural = 'Посты'
+        ordering = ['-created']
+
+    def __str__(self) -> str:
+        return self.text[:15]
+
+
+class Follow(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='follower',
+        verbose_name='Подписчик',
+        help_text='Пользователь, который подписывается',
+    )
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='following',
+        verbose_name='Автор',
+        help_text='Пользователь, на которого подписываются'
+    )
+
+    class Meta:
+        verbose_name = 'Подписка'
+        verbose_name_plural = 'Подписки'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'author'], name='unique_follower'
+            ),
+            models.CheckConstraint(
+                check=~models.Q(user=models.F('author')),
+                name='dont_following_yourself'
+            )
+        ]
+
+    def __str__(self) -> str:
+        return f'{self.user} -> {self.author}'

@@ -1,12 +1,19 @@
+import shutil
+import tempfile
+
 from django.contrib.auth import get_user_model
-from django.test import Client, TestCase
+from django.test import Client, TestCase, override_settings
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
+from django.conf import settings
 
 from posts.models import Post, Group
 
 User = get_user_model()
+TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
 
 
+@override_settings(MEDIA_ROOT=TEMP_MEDIA_ROOT)
 class PostCreateFormTest(TestCase):
     @classmethod
     def setUpClass(cls):
@@ -23,6 +30,11 @@ class PostCreateFormTest(TestCase):
             group=cls.group
         )
 
+    @classmethod
+    def tearDownClass(cls):
+        super().tearDownClass()
+        shutil.rmtree(TEMP_MEDIA_ROOT, ignore_errors=True)
+
     def setUp(self):
         self.authorized_client = Client()
         self.authorized_client.force_login(PostCreateFormTest.user)
@@ -30,10 +42,23 @@ class PostCreateFormTest(TestCase):
     def test_create_post(self):
         """Валидная форма создает запись в Post"""
         posts_count = Post.objects.count()
-        post_text = 'Тестовое создание поста'
+        small_gif = (
+            b'\x47\x49\x46\x38\x39\x61\x02\x00'
+            b'\x01\x00\x80\x00\x00\x00\x00\x00'
+            b'\xFF\xFF\xFF\x21\xF9\x04\x00\x00'
+            b'\x00\x00\x00\x2C\x00\x00\x00\x00'
+            b'\x02\x00\x01\x00\x00\x02\x02\x0C'
+            b'\x0A\x00\x3B'
+        )
+        test_img = SimpleUploadedFile(
+            name='test.gif',
+            content=small_gif,
+            content_type='image/gif'
+        )
         post_form = {
-            'text': post_text,
-            'group': PostCreateFormTest.group.pk
+            'text': 'Тестовое создание поста',
+            'group': PostCreateFormTest.group.pk,
+            'image': test_img,
         }
         response = self.authorized_client.post(
             reverse('posts:post_create'),
@@ -53,6 +78,7 @@ class PostCreateFormTest(TestCase):
                 text=post_form['text'],
                 group=post_form['group'],
                 author=PostCreateFormTest.user,
+                image='posts/test.gif'
             ).exists()
         )
 
